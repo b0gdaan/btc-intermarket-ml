@@ -1,0 +1,33 @@
+\babel@toc {serbianc}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Observed and predicted dependency for the Bitcoin--S\&P 500 pair at the 30-day window.}}{19}{figure.caption.7}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Diebold--Mariano comparison against DCC-GARCH across dependency experiments.}}{21}{figure.caption.8}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Rolling RMSE profile for the Bitcoin--S\&P 500 dependency forecast.}}{21}{figure.caption.9}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Investor warning signal for stress days in the S\&P 500 market.}}{23}{figure.caption.11}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Normalized prices of the assets included in the study.}}{31}{figure.caption.12}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Rolling volatility across the asset universe.}}{31}{figure.caption.13}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Static correlation heatmap of the return series.}}{32}{figure.caption.14}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Rolling correlation overview for the asset universe.}}{33}{figure.caption.15}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Average RMSE comparison across model families.}}{35}{figure.caption.16}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Model $R^2$ comparison for the 30-day window.}}{35}{figure.caption.17}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Improvement relative to the naive baseline.}}{36}{figure.caption.18}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Grid-search cross-validation RMSE for the representative Bitcoin--S\&P 500 forecasting task.}}{36}{figure.caption.19}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Regularization path for the Ridge-based forecasting specification.}}{36}{figure.caption.20}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Readable feature-importance view for the Random Forest model.}}{37}{figure.caption.21}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Window sensitivity of the XGBoost-based forecasting layer.}}{37}{figure.caption.22}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Forecast scatter diagnostic for the Bitcoin--S\&P 500 dependency experiment.}}{37}{figure.caption.23}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Forecast error distribution for the representative Bitcoin--S\&P 500 dependency experiment.}}{38}{figure.caption.24}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Sensitivity analysis for the Bitcoin--NASDAQ pair.}}{38}{figure.caption.25}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Sensitivity analysis for the Bitcoin--gold pair.}}{38}{figure.caption.26}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Sensitivity analysis for the Bitcoin--silver pair.}}{39}{figure.caption.27}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Sensitivity analysis for the Bitcoin--UUP pair.}}{39}{figure.caption.28}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Sensitivity analysis for the Bitcoin--Ethereum pair.}}{39}{figure.caption.29}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Signal-layer output for the Bitcoin--NASDAQ relation at the 30-day window.}}{41}{figure.caption.30}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Signal-layer output for the Bitcoin--gold relation at the 30-day window.}}{41}{figure.caption.31}%
+\contentsline {figure}{\numberline {25}{\ignorespaces Signal-layer output for the Bitcoin--silver relation at the 30-day window.}}{41}{figure.caption.32}%
+\contentsline {figure}{\numberline {26}{\ignorespaces Signal-layer output for the Bitcoin--UUP relation at the 30-day window.}}{42}{figure.caption.33}%
+\contentsline {figure}{\numberline {27}{\ignorespaces Supplementary S\&P 500 warning signal at the 14-day window.}}{43}{figure.caption.35}%
+\contentsline {figure}{\numberline {28}{\ignorespaces Supplementary S\&P 500 warning signal at the 60-day window.}}{44}{figure.caption.36}%
+\contentsline {figure}{\numberline {29}{\ignorespaces Supplementary S\&P 500 warning signal at the 90-day window.}}{45}{figure.caption.37}%
+\contentsline {figure}{\numberline {30}{\ignorespaces Supplementary NASDAQ warning signal at the 14-day window.}}{46}{figure.caption.38}%
+\contentsline {figure}{\numberline {31}{\ignorespaces Supplementary NASDAQ warning signal at the 60-day window.}}{47}{figure.caption.39}%

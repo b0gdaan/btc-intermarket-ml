@@ -31,6 +31,8 @@ The empirical analysis uses daily market data obtained through the \texttt{yfina
 
 This universe was chosen for substantive rather than purely technical reasons. The two equity indices represent broad U.S. risk assets. Gold and silver ETFs capture precious-metal exposure, often linked to inflation concerns, safe-haven narratives, or commodity sentiment. The dollar index proxy reflects global dollar strength and defensive macro positioning. Ethereum is included as an additional crypto benchmark in order to contrast cross-crypto dependency with crypto-to-conventional dependency.
 
+The sample spans from 9 November 2017 to 27 February 2026, yielding 2{,}976 daily observations per asset. The effective start date is determined by the availability of Ethereum price data on Yahoo Finance; earlier dates contain no ETH-USD observations and are therefore excluded from the aligned panel. The resulting dataset is balanced: all seven tickers share an identical date index with no missing observations after alignment and forward-filling of non-trading-day gaps up to two consecutive calendar days.
+
 \subsection{Return construction and preprocessing}
 
 All price series are converted into daily log returns. Log returns are preferred because they are additive over time and are standard in both econometric modeling and machine-learning pipelines for financial time series. Missing observations are handled through alignment across available dates, and all downstream targets and features are built only after the return matrix is synchronized.

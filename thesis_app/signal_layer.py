@@ -3,7 +3,7 @@ Investor-facing signal layer built on top of dependency forecasts.
 """
 import os
 import warnings
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 import matplotlib
 matplotlib.use("Agg")

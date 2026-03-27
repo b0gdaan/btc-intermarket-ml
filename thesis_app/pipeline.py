@@ -109,9 +109,17 @@ def fetch_prices(paths: Paths, tickers: List[str], start: str, end: Optional[str
         cached = pd.read_csv(prices_path, index_col=0, parse_dates=True)
         missing = [ticker for ticker in tickers if ticker not in cached.columns]
         if not missing:
-            print(f"Loaded prices from cache: {prices_path}")
-            return cached.sort_index()
-        print(f"Re-downloading because cache is missing tickers: {missing}")
+            required_end = pd.Timestamp(end) if end else pd.Timestamp.today()
+            cache_covers = (
+                cached.index.min() <= pd.Timestamp(start) + pd.Timedelta(days=5)
+                and cached.index.max() >= required_end - pd.Timedelta(days=7)
+            )
+            if cache_covers:
+                print(f"Loaded prices from cache: {prices_path}")
+                return cached.sort_index()
+            print("Re-downloading: cached date range does not cover config dates.")
+        else:
+            print(f"Re-downloading because cache is missing tickers: {missing}")
 
     print(f"Downloading {len(tickers)} tickers from Yahoo Finance...")
     downloaded = yf.download(

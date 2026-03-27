@@ -36,12 +36,7 @@ import numpy as np
 import pandas as pd
 
 
-# ---------------------------------------------------------------------------
-# Regime catalogue
-# ---------------------------------------------------------------------------
-
 # Format: "label": (start, end, colour, description)
-# Dates chosen from widely referenced academic and press sources.
 REGIMES: Dict[str, Tuple[str, str, str, str]] = {
     "Crypto Bull\n2017":        ("2017-01-01", "2017-12-17", "#2ca02c", "Initial crypto bull run"),
     "Crypto Bear\n2018":        ("2018-01-01", "2018-12-31", "#d62728", "Post-ATH bear market"),
@@ -63,10 +58,6 @@ MACRO_REGIMES: Dict[str, Tuple[str, str, str, str]] = {
     "Hike\nCycle":          ("2022-03-16", "2023-07-26", "#ff7f0e", "Fed funds 0→5.25 %"),
 }
 
-
-# ---------------------------------------------------------------------------
-# Core statistics
-# ---------------------------------------------------------------------------
 
 def compute_regime_stats(
     rolling_corr: pd.Series,
@@ -139,10 +130,6 @@ def compute_regime_corr_matrix(
     return segment.corr() if len(segment) > 5 else None
 
 
-# ---------------------------------------------------------------------------
-# Plotting
-# ---------------------------------------------------------------------------
-
 def plot_rolling_corr_with_regimes(
     rolling_corr: pd.Series,
     pair_label: str = "BTC-USD / Asset",
@@ -167,7 +154,6 @@ def plot_rolling_corr_with_regimes(
 
     fig, ax = plt.subplots(figsize=(16, 5))
 
-    # Regime bands
     legend_patches = []
     seen_colours: Dict[str, bool] = {}
     for label, (start, end, colour, description) in regimes.items():
@@ -181,11 +167,9 @@ def plot_rolling_corr_with_regimes(
             # Disambiguate same colour (Terra/Luna overlaps Rate Hike)
             legend_patches.append(mpatches.Patch(color=colour, alpha=0.5, label=clean_label))
 
-    # Correlation line
     ax.plot(rolling_corr.index, rolling_corr.values, color="steelblue", linewidth=1.2, label=f"{window}d corr")
     ax.axhline(0, color="black", linewidth=0.6, linestyle="--")
 
-    # Rolling mean overlay
     smooth = rolling_corr.rolling(90, min_periods=30).mean()
     ax.plot(smooth.index, smooth.values, color="darkorange", linewidth=1.8,
             linestyle="-", alpha=0.85, label="90d MA")
@@ -196,10 +180,8 @@ def plot_rolling_corr_with_regimes(
                  fontsize=13, fontweight="bold")
     ax.set_ylim(-1.05, 1.05)
 
-    # Two-column legend: regimes + line styles
     line_legend = ax.legend(loc="upper left", fontsize=8, framealpha=0.9)
     ax.add_artist(line_legend)
-    # Regime legend placed below plot
     fig.legend(
         handles=legend_patches,
         loc="lower center",
@@ -289,7 +271,6 @@ def plot_all_pairs_regime_heatmap(
     ax.set_yticks(range(len(pair_labels)))
     ax.set_yticklabels(pair_labels, fontsize=10)
 
-    # Annotate cells
     for pi in range(len(pairs)):
         for ri in range(len(regime_labels)):
             val = mat[pi, ri]
@@ -305,10 +286,6 @@ def plot_all_pairs_regime_heatmap(
     plt.close(fig)
     return fig
 
-
-# ---------------------------------------------------------------------------
-# LaTeX table export
-# ---------------------------------------------------------------------------
 
 def regime_stats_to_latex(
     stats: pd.DataFrame,
@@ -365,10 +342,6 @@ def regime_stats_to_latex(
     return latex
 
 
-# ---------------------------------------------------------------------------
-# Top-level convenience function
-# ---------------------------------------------------------------------------
-
 def run_regime_analysis(
     prices: pd.DataFrame,
     base: str,
@@ -400,7 +373,6 @@ def run_regime_analysis(
 
     all_pairs = [(base, o) for o in others if o in returns.columns]
 
-    # Pair × window individual analyses
     for other in others:
         if other not in returns.columns:
             print(f"[regime_analysis] Skipping {other}: not in returns DataFrame")

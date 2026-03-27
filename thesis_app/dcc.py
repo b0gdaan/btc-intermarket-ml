@@ -23,13 +23,13 @@ def _fit_univariate_garch(r: pd.Series) -> np.ndarray:
     if not ARCH_AVAILABLE:
         raise ImportError("arch package required: pip install arch")
 
-    x = 100.0 * r.dropna().astype(float).values  # scale for numerical stability
+    x = 100.0 * r.dropna().astype(float).values
     am = arch_model(x, vol="Garch", p=1, q=1, mean="Zero", dist="normal")
     res = am.fit(disp="off", show_warning=False)
     eps = res.resid
     sig = res.conditional_volatility
     # Avoid division by zero
-    sig = np.where(sig < 1e-10, 1e-10, sig)
+    sig = np.maximum(sig, 1e-10)
     return eps / sig
 
 
@@ -57,7 +57,6 @@ def _dcc_loglik(params: np.ndarray, z: np.ndarray, Qbar: np.ndarray) -> float:
         Dinv = np.diag(1.0 / d)
         R = Dinv @ Q @ Dinv
 
-        # Clip R for numerical stability
         R = np.clip(R, -0.9999, 0.9999)
         np.fill_diagonal(R, 1.0)
 
@@ -113,7 +112,6 @@ def dcc_garch_fit_predict(
     )
     a, b = res.x
 
-    # Reconstruct R_t and one-step-ahead forecasts
     Q = Qbar.copy()
     corr_t = np.full(T, np.nan, dtype=float)
     pred = np.full(T, np.nan, dtype=float)
@@ -138,7 +136,6 @@ def dcc_garch_fit_predict(
     pred_s = pd.Series(pred, index=idx).reindex(df.index)
     corr_s = pd.Series(corr_t, index=idx).reindex(df.index)
 
-    # Expand to full original index
     full_idx = pd.concat([r1.to_frame(), r2.to_frame()], axis=1).index
     full_pred = pd.Series(np.nan, index=full_idx, dtype=float)
     full_corr = pd.Series(np.nan, index=full_idx, dtype=float)

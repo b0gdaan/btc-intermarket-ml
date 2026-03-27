@@ -25,10 +25,6 @@ import numpy as np
 import pandas as pd
 
 
-# ---------------------------------------------------------------------------
-# Core per-ticker statistics
-# ---------------------------------------------------------------------------
-
 def ticker_quality_stats(prices: pd.DataFrame, sigma_threshold: float = 5.0) -> pd.DataFrame:
     """Return a DataFrame with one row per ticker summarising data quality.
 
@@ -57,7 +53,6 @@ def ticker_quality_stats(prices: pd.DataFrame, sigma_threshold: float = 5.0) -> 
         n_calendar = len(full_range)
         n_missing_price = int(prices[ticker].isna().sum())
 
-        # Gap analysis on calendar days between consecutive observations
         diffs = pd.Series(px.index).diff().dropna().dt.days
         n_gaps_1d = int((diffs == 1).sum())
         n_gaps_2d = int((diffs == 2).sum())
@@ -71,7 +66,7 @@ def ticker_quality_stats(prices: pd.DataFrame, sigma_threshold: float = 5.0) -> 
                 z_scores = (ret - ret.mean()) / (ret.std() + 1e-15)
                 n_outliers = int((z_scores.abs() > sigma_threshold).sum())
                 skew = float(ret.skew())
-                kurt = float(ret.kurt())   # excess (Fisher)
+                kurt = float(ret.kurt())
             else:
                 n_outliers = skew = kurt = np.nan
 
@@ -107,10 +102,6 @@ def check_coverage_overlap(prices: pd.DataFrame) -> pd.DataFrame:
             mat[i, j] = int((prices[a].notna() & prices[b].notna()).sum())
     return pd.DataFrame(mat, index=tickers, columns=tickers)
 
-
-# ---------------------------------------------------------------------------
-# Plotting helpers
-# ---------------------------------------------------------------------------
 
 def plot_missing_heatmap(prices: pd.DataFrame, output_path: Optional[str] = None):
     """Binary heatmap of missing prices — white = present, black = missing."""
@@ -194,10 +185,6 @@ def plot_price_coverage(prices: pd.DataFrame, output_path: Optional[str] = None)
     return fig
 
 
-# ---------------------------------------------------------------------------
-# LaTeX table export
-# ---------------------------------------------------------------------------
-
 def data_quality_to_latex(stats: pd.DataFrame, output_path: Optional[str] = None) -> str:
     """Render the quality-stats DataFrame as a LaTeX longtable snippet."""
     display_cols = [
@@ -243,10 +230,6 @@ def data_quality_to_latex(stats: pd.DataFrame, output_path: Optional[str] = None
             fh.write(latex)
     return latex
 
-
-# ---------------------------------------------------------------------------
-# Top-level convenience function
-# ---------------------------------------------------------------------------
 
 def run_data_quality_report(
     prices: pd.DataFrame,

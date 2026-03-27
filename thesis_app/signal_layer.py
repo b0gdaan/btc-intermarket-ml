@@ -60,7 +60,8 @@ def build_signal_features(
 ) -> pd.DataFrame:
     idx = dependency_prediction.index
     features = pd.DataFrame(index=idx)
-    btc = returns[base]
+    base_r = returns[base]
+    base_key = base.replace("-", "").replace("^", "").lower()
 
     features["dep_pred"] = dependency_prediction
     features["dep_pred_lag1"] = dependency_prediction.shift(1)
@@ -69,23 +70,23 @@ def build_signal_features(
     features["dep_pred_abs"] = dependency_prediction.abs()
 
     for lag in [1, 2, 5, 10]:
-        features[f"btc_ret_lag{lag}"] = btc.shift(lag).reindex(idx)
+        features[f"{base_key}_ret_lag{lag}"] = base_r.shift(lag).reindex(idx)
 
-    features["btc_vol_5"] = btc.rolling(5).std().reindex(idx)
-    features["btc_vol_20"] = btc.rolling(20).std().reindex(idx)
-    features["btc_mom_5"] = btc.rolling(5).sum().reindex(idx)
-    features["btc_mom_20"] = btc.rolling(20).sum().reindex(idx)
-    features["btc_down_streak_5"] = (btc < 0).astype(int).rolling(5).sum().reindex(idx)
+    features[f"{base_key}_vol_5"] = base_r.rolling(5).std().reindex(idx)
+    features[f"{base_key}_vol_20"] = base_r.rolling(20).std().reindex(idx)
+    features[f"{base_key}_mom_5"] = base_r.rolling(5).sum().reindex(idx)
+    features[f"{base_key}_mom_20"] = base_r.rolling(20).sum().reindex(idx)
+    features[f"{base_key}_down_streak_5"] = (base_r < 0).astype(int).rolling(5).sum().reindex(idx)
 
     if "ETH-USD" in returns.columns:
         eth = returns["ETH-USD"]
         features["eth_ret_lag1"] = eth.shift(1).reindex(idx)
         features["eth_ret_lag5"] = eth.shift(5).reindex(idx)
-        features["btc_eth_spread_1"] = (btc.shift(1) - eth.shift(1)).reindex(idx)
-        features["btc_eth_corr_14"] = rolling_corr(btc, eth, 14).shift(1).reindex(idx)
+        features[f"{base_key}_eth_spread_1"] = (base_r.shift(1) - eth.shift(1)).reindex(idx)
+        features[f"{base_key}_eth_corr_14"] = rolling_corr(base_r, eth, 14).shift(1).reindex(idx)
 
-    features["btc_other_corr_14"] = rolling_corr(btc, returns[other], 14).shift(1).reindex(idx)
-    features["btc_other_spread_5"] = (btc - returns[other]).abs().rolling(5).mean().shift(1).reindex(idx)
+    features[f"{base_key}_other_corr_14"] = rolling_corr(base_r, returns[other], 14).shift(1).reindex(idx)
+    features[f"{base_key}_other_spread_5"] = (base_r - returns[other]).abs().rolling(5).mean().shift(1).reindex(idx)
 
     signal_target = build_signal_target(returns, other, horizon, mode=target_mode, stress_sigma=stress_sigma)
     return features.join(signal_target, how="inner").dropna()
@@ -180,16 +181,16 @@ def plot_signal_probability(
     probability_column: str,
     threshold: float,
 ) -> None:
-    plt.figure(figsize=(13, 5))
-    plt.plot(signal_df.index, signal_df[probability_column], label=f"{probability_column} P(down)", color="#c23b22", linewidth=1.2)
-    plt.plot(signal_df.index, signal_df["target_down"], label="Actual down-day", color="#1f4e79", alpha=0.5, linewidth=0.8)
-    plt.axhline(threshold, linestyle="--", color="black", linewidth=1, label=f"Threshold={threshold:.2f}")
-    plt.ylim(-0.05, 1.05)
-    plt.legend(ncol=3)
-    plt.title(title)
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=120)
-    plt.close()
+    fig, ax = plt.subplots(figsize=(13, 5))
+    ax.plot(signal_df.index, signal_df[probability_column], label=f"{probability_column} P(down)", color="#c23b22", linewidth=1.2)
+    ax.plot(signal_df.index, signal_df["target_down"], label="Actual down-day", color="#1f4e79", alpha=0.5, linewidth=0.8)
+    ax.axhline(threshold, linestyle="--", color="black", linewidth=1, label=f"Threshold={threshold:.2f}")
+    ax.set_ylim(-0.05, 1.05)
+    ax.legend(ncol=3)
+    ax.set_title(title)
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=120)
+    plt.close(fig)
 
 
 def signal_metrics_to_latex(df: pd.DataFrame, out_tex: str) -> None:
@@ -279,7 +280,8 @@ def run_signal_experiment(
     signal_out["best_signal_flag"] = (signal_out[best_signal_model] >= threshold).astype(float)
 
     metrics_df.insert(0, "dependency_model", dependency_model)
-    signal_label = f"{cfg.get("signal_target_mode", "stress")}_{other}"
+    signal_target_mode = cfg.get("signal_target_mode", "stress")
+    signal_label = f"{signal_target_mode}_{other}"
     metrics_df.insert(0, "signal_target", signal_label)
     metrics_df.insert(0, "window", window)
     metrics_df.insert(0, "dependency", dependency_name)

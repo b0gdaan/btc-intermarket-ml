@@ -209,7 +209,7 @@ def _make_xgb(device: str, random_state: int):
         return None
 
     common = dict(
-        n_estimators=600,
+        n_estimators=300,
         max_depth=5,
         learning_rate=0.05,
         subsample=0.8,
@@ -367,6 +367,8 @@ def diebold_mariano(
 
     dm_stat = d_mean / math.sqrt(variance / sample_size) if variance > 0 else np.nan
     p_value = 2 * (1 - stats.t.cdf(abs(dm_stat), df=sample_size - 1)) if np.isfinite(dm_stat) else np.nan
+    if np.isfinite(p_value):
+        p_value = max(float(p_value), np.finfo(float).tiny)
     return {
         "DM_stat": float(dm_stat) if np.isfinite(dm_stat) else None,
         "p_value": float(p_value) if np.isfinite(p_value) else None,
@@ -375,14 +377,14 @@ def diebold_mariano(
 
 
 def plot_series(out_path: str, title: str, series_dict: Dict[str, pd.Series], figsize=(12, 5)) -> None:
-    plt.figure(figsize=figsize)
+    fig, ax = plt.subplots(figsize=figsize)
     for label, series in series_dict.items():
-        plt.plot(series.index, series.values, label=label, linewidth=1)
-    plt.title(title)
-    plt.legend(ncol=2)
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=120)
-    plt.close()
+        ax.plot(series.index, series.values, label=label, linewidth=1)
+    ax.set_title(title)
+    ax.legend(ncol=2)
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=120)
+    plt.close(fig)
 
 
 def plot_forecast(
@@ -393,17 +395,17 @@ def plot_forecast(
     top_models: Optional[List[str]] = None,
     top_k: int = 4,
 ) -> None:
-    plt.figure(figsize=(13, 5))
-    plt.plot(y_true.index, y_true.values, label="Actual", linewidth=1.8, color="black")
+    fig, ax = plt.subplots(figsize=(13, 5))
+    ax.plot(y_true.index, y_true.values, label="Actual", linewidth=1.8, color="black")
     cols = top_models if top_models else [c for c in pred_df.columns if pred_df[c].notna().sum() > 50][:top_k]
     colors = plt.cm.tab10.colors
     for i, column in enumerate(cols[:top_k]):
-        plt.plot(pred_df.index, pred_df[column].values, label=column, alpha=0.85, linewidth=1, color=colors[i % len(colors)])
-    plt.legend(ncol=2)
-    plt.title(title)
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=120)
-    plt.close()
+        ax.plot(pred_df.index, pred_df[column].values, label=column, alpha=0.85, linewidth=1, color=colors[i % len(colors)])
+    ax.legend(ncol=2)
+    ax.set_title(title)
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=120)
+    plt.close(fig)
 
 
 def describe_dataset(prices: pd.DataFrame, returns: pd.DataFrame, paths: Paths, cfg: Dict) -> None:

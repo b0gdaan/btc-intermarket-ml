@@ -22,6 +22,6 @@ print(f"Creating directory structure under {BASE}")
 for d in dirs:
     full = os.path.join(BASE, d)
     os.makedirs(full, exist_ok=True)
-    print(f"  ✓ {full}")
+    print(f"  {full}")
 
-print("\n✅ Done. Now run: python main.py")
+print("\nDone. Now run: python main.py")
